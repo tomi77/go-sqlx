@@ -13,12 +13,8 @@ type NullTime struct {
 
 // Scan implements the Scanner interface.
 func (n *NullTime) Scan(value interface{}) error {
-	if value == nil {
-		n.Time, n.Valid = time.Time{}, false
-		return nil
-	}
-	n.Valid = true
-	return convertAssign(&n.Time, value)
+	n.Time, n.Valid = value.(time.Time)
+	return nil
 }
 
 // Value implements the driver Valuer interface.
