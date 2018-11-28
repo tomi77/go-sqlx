@@ -1,0 +1,26 @@
+language: go
+
+go:
+  - 1.9.x
+  - 1.10.x
+  - master
+
+services:
+  - postgresql
+
+install:
+  - go get -t -v ./...
+  - go get golang.org/x/tools/cmd/cover
+  - go get github.com/mattn/goveralls
+
+before_script:
+  - psql -c 'create database sqlx;' -U postgres
+
+script:
+  - go test -v -covermode=count -coverprofile=coverage.out ./...
+  - goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN
+
+env:
+  global:
+    - secure: "nfSuCGMsFITR6zHgK6GL1tFGGUudPRxi87eK7m7duQf8+np3w/Dr+HsjKal9iJWMZEKxiemsfnR7mRQHbeJLH5SO1ER3s7MqSbV2zsiU1NaBseaSzYEfY+GF4dSPqrs0mKltdvvqKelj0xHIDv3WXD9Y5TTyjGyPDFSxdVSgvIlyp6tLLGs9vZqONH5Wy1sRn4mA5H3jvlbNMIahdQS6gMvEhl0aOR9wIwwJqVdnWZ23AB3IeE4pyRRN3ubmFA2gkCrwMBlg+Zjhm1G70lFg8LFPGcuuHTebrARYJkpDpyJiGCvaKSJLXLzpzIqHcxTK3QwkhC6lc0ETC0gbGirZQQHggylZL3YmD8oM/IcCweUvLJma7+afRQFEQkEDKiTB45WPKLphUTpt7/hiDwEBFVqlUiYn3kTFSJytiwn0j3iMWRwBhd/9R39BqhVUdlkrH0SjQ39w+yzmd/R6MONXgh0iBRpLa9dIx1qvfInC8f2MigNz9Nqu5Xv7ykvP9xUSSGhsEmvGihewcmcgjZDjb4mp+x5BwzaB24j7mqNJOYHNzoggt5DwMkYnlTzJdm3Jr30qphWuBcCCBE5jp9jJqIz9pr8gMMNsllbNWuDPHlm+Zo/oJ6qKVjV8s9eZh/p0J77lco1aEBkzqVa8pRexvMkIgnMm0LG0+IRyzuxWL9o="
+    - POSTGRESQL_URL: "postgres://postgres@127.0.0.1/sqlx?sslmode=disable"

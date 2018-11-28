@@ -3,6 +3,7 @@ package sqlx
 import (
 	"database/sql/driver"
 	"fmt"
+	"strings"
 	"time"
 )
 
@@ -15,8 +16,9 @@ type NullDate struct {
 // Scan implements the Scanner interface.
 func (n *NullDate) Scan(value interface{}) error {
 	date := fmt.Sprintf("%s", value)
+	parts := strings.Split(date, " ")
 	var err error
-	n.Date, err = time.Parse("2006-01-02", date)
+	n.Date, err = time.Parse("2006-01-02", parts[0])
 	n.Valid = err == nil
 	return nil
 }
