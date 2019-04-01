@@ -2,6 +2,7 @@ package sqlx
 
 import (
 	"database/sql/driver"
+	"fmt"
 	"time"
 )
 
@@ -13,7 +14,15 @@ type NullDateTime struct {
 
 // Scan implements the Scanner interface.
 func (n *NullDateTime) Scan(value interface{}) error {
-	n.DateTime, n.Valid = value.(time.Time)
+	if value == nil {
+		n.DateTime = time.Time{}
+		n.Valid = false
+	} else {
+		date := fmt.Sprintf("%s", value)
+		var err error
+		n.DateTime, err = time.Parse("2006-01-02 15:04:05-07", date)
+		n.Valid = err == nil
+	}
 	return nil
 }
 
