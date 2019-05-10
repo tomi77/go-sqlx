@@ -20,7 +20,7 @@ func (n *NullDateTime) Scan(value interface{}) error {
 	} else {
 		date := fmt.Sprintf("%s", value)
 		var err error
-		n.DateTime, err = time.Parse("2006-01-02 15:04:05-07", date)
+		n.DateTime, err = time.Parse("2006-01-02 15:04:05 -0700 MST", date)
 		n.Valid = err == nil
 	}
 	return nil
